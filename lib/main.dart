@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -12,7 +10,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Thrembo Calculator',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const MyHomePage(title: 'Thrembo Calculator'),
+      home: const MyHomePage(title: 'Thrembo Calculator Ϫ'),
     );
   }
 }
@@ -27,30 +25,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  static const _buttonLabels = [
+    '.',
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    'Ϫ',
+    '7',
+    '8',
+    '9'
+  ];
 
-  void _incrementCounter() => setState(() => _counter++);
+  String _thremboText = "";
+
+  void _inputChar(String char) => setState(() => _thremboText += char);
 
   @override
   Widget build(BuildContext context) {
+    var buttons = GridView.count(
+        crossAxisCount: 4,
+        shrinkWrap: true,
+        children: _buttonLabels
+            .map((c) =>
+                ElevatedButton(onPressed: () => _inputChar(c), child: Text(c)))
+            .toList());
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have adas the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text(_thremboText), buttons],
       ),
     );
   }
