@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math';
 
-void main() => runApp(const MyApp());
+void main() {
+  // Force screen orientation to portrait
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) => runApp(const MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -26,20 +32,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const _buttonLabels = [
-    '0',
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    'Ϫ',
-    '7',
-    '8',
-    '9'
-  ];
-
   static const _normalNumber = {
     '0': 0,
     '1': 1,
@@ -58,6 +50,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _inputChar(String char) => setState(() => _thremboText += char);
 
+  void _deleteChar() => setState((() {
+        var lastIndex = _thremboText.length - 1;
+        if (lastIndex != -1) {
+          _thremboText = _thremboText.substring(0, lastIndex);
+        }
+      }));
+
+  ElevatedButton _charButton(String char) {
+    return ElevatedButton(onPressed: () => _inputChar(char), child: Text(char));
+  }
+
   static String _convertNumber(String thremboNumber) {
     if (thremboNumber == "") return "";
     int resultNum = 0;
@@ -70,13 +73,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var buttons = GridView.count(
-        crossAxisCount: 4,
-        shrinkWrap: true,
-        children: _buttonLabels
-            .map((c) =>
-                ElevatedButton(onPressed: () => _inputChar(c), child: Text(c)))
-            .toList());
+    var buttons =
+        GridView.count(crossAxisCount: 4, shrinkWrap: true, children: [
+      _charButton('0'),
+      _charButton('1'),
+      _charButton('2'),
+      _charButton('3'),
+      _charButton('4'),
+      _charButton('5'),
+      _charButton('6'),
+      _charButton('Ϫ'),
+      _charButton('7'),
+      _charButton('8'),
+      _charButton('9'),
+      ElevatedButton(onPressed: _deleteChar, child: const Icon(Icons.backspace))
+    ]);
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
