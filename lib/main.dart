@@ -57,8 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }));
 
-  ElevatedButton _charButton(String char) {
-    return ElevatedButton(onPressed: () => _inputChar(char), child: Text(char));
+  CalcButton _charButton(String char) {
+    return CalcButton(onPressed: () => _inputChar(char), child: Text(char));
   }
 
   static String _convertNumber(String thremboNumber) {
@@ -70,6 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return resultNum.toString();
   }
 
+  /// Check whether the _thremboText character at this index is a thrembo number
   bool indexIsNum(int index) =>
       index != _thremboText.length &&
       _normalNumber.keys.contains(_thremboText[index]);
@@ -106,7 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _charButton('7'),
       _charButton('8'),
       _charButton('9'),
-      ElevatedButton(onPressed: _deleteChar, child: const Icon(Icons.backspace))
+      CalcButton(onPressed: _deleteChar, child: const Icon(Icons.backspace)),
+      CalcButton(onPressed: () => debugPrint("equals"), child: const Text('='))
     ]);
 
     return Scaffold(
@@ -117,4 +119,21 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+class CalcButton extends StatelessWidget {
+  const CalcButton({Key? key, required this.onPressed, required this.child})
+      : super(key: key);
+
+  final void Function() onPressed;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+              textStyle: const TextStyle(fontSize: 25)),
+          child: child));
 }
