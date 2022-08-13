@@ -62,7 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   static String _convertNumber(String thremboNumber) {
-    if (thremboNumber == "") return "";
     int resultNum = 0;
     for (var i = 0; i < thremboNumber.length; i++) {
       var char = thremboNumber[thremboNumber.length - 1 - i];
@@ -71,10 +70,31 @@ class _MyHomePageState extends State<MyHomePage> {
     return resultNum.toString();
   }
 
+  bool indexIsNum(int index) =>
+      index != _thremboText.length &&
+      _normalNumber.keys.contains(_thremboText[index]);
+
+  String _convertExpression() {
+    String convertedExpression = "";
+    for (var i = 0; i < _thremboText.length; i++) {
+      String buffer = _thremboText[i];
+      if (indexIsNum(i)) {
+        while (indexIsNum(i + 1)) {
+          buffer += _thremboText[++i];
+        }
+        convertedExpression += _convertNumber(buffer);
+      } else {
+        convertedExpression += buffer;
+      }
+    }
+    return convertedExpression;
+  }
+
   @override
   Widget build(BuildContext context) {
     var buttons =
         GridView.count(crossAxisCount: 4, shrinkWrap: true, children: [
+      _charButton('+'),
       _charButton('0'),
       _charButton('1'),
       _charButton('2'),
@@ -93,11 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: Text(widget.title)),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(_thremboText),
-          Text(_convertNumber(_thremboText)),
-          buttons
-        ],
+        children: [Text(_thremboText), Text(_convertExpression()), buttons],
       ),
     );
   }
