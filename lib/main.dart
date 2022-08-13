@@ -46,6 +46,13 @@ class _MyHomePageState extends State<MyHomePage> {
     '9': 10
   };
 
+  static final Map<String, int Function(int, int)> _operators = {
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b,
+    '×': (a, b) => a * b,
+    '÷': (a, b) => a ~/ b
+  };
+
   // Reverse of _thremboToNormal
   static final _normalToThrembo =
       _thremboToNormal.map((key, value) => MapEntry(value, key));
@@ -108,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (tokens[i].runtimeType == String) {
           final int left = tokens[i - 1];
           final int right = tokens[i + 1];
-          final int result = left + right;
+          final int result = _operators[tokens[i]]!(left, right);
           tokens.removeRange(i, i + 2); // [i, i+2)
           tokens[i - 1] = result;
           break;
@@ -134,6 +141,9 @@ class _MyHomePageState extends State<MyHomePage> {
     var buttons =
         GridView.count(crossAxisCount: 4, shrinkWrap: true, children: [
       _charButton('+'),
+      _charButton('-'),
+      _charButton('×'),
+      _charButton('÷'),
       _charButton('0'),
       _charButton('1'),
       _charButton('2'),
@@ -153,7 +163,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: Text(widget.title)),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text(_thremboText), Text(_convertExpression()), buttons],
+        children: [
+          Text(_thremboText, textScaleFactor: 2.5),
+          Text(
+            _convertExpression(),
+            textScaleFactor: 2,
+          ),
+          buttons
+        ],
       ),
     );
   }
